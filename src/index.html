@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<!-- The app can run commands as root (Homebrew Channel), so only its own scripts may run,
+	     and it only talks to its own daemon on this TV. -->
+	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src http://127.0.0.1:8765; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
+	<title>IR Binder</title>
+	<link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+	<header>
+		<h1>IR Binder</h1>
+		<div id="status" class="pill off">Service: checking…</div>
+	</header>
+
+	<main id="page">
+		<section class="col">
+			<div class="card">
+				<h2>Service</h2>
+				<p id="statustext" class="muted">Checking the background service…</p>
+				<div class="row">
+					<button id="installbtn">Install &amp; start service</button>
+					<button id="pausebtn">Pause bindings</button>
+					<button id="uninstallbtn" class="ghost">Stop &amp; remove</button>
+				</div>
+			</div>
+
+			<div class="card">
+				<h2>Learn a signal</h2>
+				<p class="muted">Press <b>Learn</b>, then point any remote at the TV and press a button.</p>
+				<button id="learnbtn" class="primary big">Learn new signal</button>
+			</div>
+
+			<div class="card grow">
+				<h2>Live signals</h2>
+				<ul id="log" class="log"><li class="muted">Waiting for signals…</li></ul>
+			</div>
+		</section>
+
+		<section class="col">
+			<div class="card grow">
+				<h2>Bindings</h2>
+				<ul id="bindings" class="bindings"><li class="muted">No bindings yet.</li></ul>
+			</div>
+		</section>
+	</main>
+
+	<!-- Learn / bind dialog: always in the page, shown by toggling a class -->
+	<div id="modal">
+		<div class="dialog">
+			<div id="stepwait">
+				<h2>Press a button on your remote…</h2>
+				<p class="muted">Listening for <span id="countdown">20</span>s. This screen ignores the remote while listening.</p>
+				<div class="pulse"></div>
+				<button id="cancellearnbtn" class="ghost">Cancel</button>
+			</div>
+
+			<div id="stepbind">
+				<h2>Bind <span id="siglabel" class="mono"></span></h2>
+				<p id="siginfo" class="muted"></p>
+				<div id="tabs" class="tabs"></div>
+				<div id="choices" class="choices"></div>
+				<div class="row footer">
+					<button id="repeatbtn">Repeat while held: off</button>
+					<button id="cancelbindbtn" class="ghost">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="toast"></div>
+
+	<!-- Scripts last, so the page is drawn before they load -->
+	<script src="js/api.js"></script>
+	<script src="js/dpad.js"></script>
+	<script src="js/main.js"></script>
+</body>
+
+</html>

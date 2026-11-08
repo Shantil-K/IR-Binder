@@ -1,0 +1,15 @@
+{
+  "id": "com.anymote.irbind",
+  "version": "1.1.0",
+  "vendor": "Anymote",
+  "type": "web",
+  "main": "index.html",
+  "title": "IR Binder",
+  "icon": "icon.png",
+  "largeIcon": "largeIcon.png",
+  "bgColor": "#101418",
+  "resolution": "1920x1080",
+  "spinnerOnLaunch": false,
+  "noSplashOnLaunch": true,
+  "disableBackHistoryAPI": true
+}

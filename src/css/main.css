@@ -1,0 +1,180 @@
+/* Sizes are in rem, and 1rem follows the screen height, so the layout fits any app resolution.
+   Kept cheap for the TV's CPU: the focus ring is an outline (no scaling or shadows), nothing
+   animates except the small "listening" dot, and hidden parts use display:none. */
+
+:root {
+	--bg: #101418;
+	--card: #1a2027;
+	--line: #2a323c;
+	--text: #e8edf2;
+	--muted: #8b97a5;
+	--accent: #3fa7ff;
+	--ok: #3ccf7a;
+	--bad: #ff5a5f;
+	--focus: #ffd34d;
+}
+
+* { box-sizing: border-box; }
+
+html { font-size: 2.4vh; }
+
+html, body {
+	margin: 0;
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+	background-color: var(--bg);
+	color: var(--text);
+	font-family: "LG Smart UI", "Museo Sans", Arial, sans-serif;
+}
+
+header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 10vh;
+	padding: 0 3.3vw;
+}
+
+h1 { margin: 0; font-size: 2rem; }
+h2 { margin: 0 0 0.6rem; font-size: 1.25rem; }
+p { margin: 0 0 0.8rem; }
+.muted { color: var(--muted); }
+.mono { font-family: "DejaVu Sans Mono", monospace; }
+
+.pill { padding: 0.4rem 1rem; border-radius: 2rem; font-size: 0.9rem; }
+.pill.on { background-color: #173a28; color: var(--ok); }
+.pill.off { background-color: #3d1d20; color: var(--bad); }
+.pill.paused { background-color: #3d3519; color: var(--focus); }
+
+main {
+	display: flex;
+	gap: 1.9vw;
+	height: 88vh;
+	padding: 0 3.3vw 3vh;
+}
+
+.col { flex: 1; display: flex; flex-direction: column; gap: 2.6vh; min-width: 0; }
+.card { background-color: var(--card); border-radius: 0.7rem; padding: 1rem 1.2rem; }
+.card.grow { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+
+button {
+	font: inherit;
+	font-size: 1rem;
+	color: var(--text);
+	background-color: #2a323c;
+	border: 0;
+	border-radius: 0.45rem;
+	padding: 0.55rem 1rem;
+	outline: none;
+}
+button.primary { background-color: var(--accent); color: #04121f; font-weight: bold; }
+button.ghost { background-color: transparent; box-shadow: inset 0 0 0 2px var(--line); }
+button.big { font-size: 1.25rem; padding: 0.8rem 1.5rem; }
+button.small { padding: 0.3rem 0.7rem; font-size: 0.85rem; }
+button:hover { background-color: #36404c; }
+button.primary:hover { background-color: #65b9ff; }
+
+/* The remote's focus ring (dpad.js) */
+.dfocus { outline: 0.2rem solid var(--focus); outline-offset: 0.15rem; }
+
+input {
+	font: inherit;
+	font-size: 0.95rem;
+	color: var(--text);
+	background-color: #0d1115;
+	border: 2px solid var(--line);
+	border-radius: 0.4rem;
+	padding: 0.45rem 0.6rem;
+	outline: none;
+}
+input:focus { border-color: var(--accent); }
+.wide { width: 45rem; }
+.mid { width: 20rem; }
+
+ul { list-style: none; margin: 0; padding: 0; overflow: hidden; }
+
+.log { flex: 1; font-size: 0.85rem; }
+.log li { display: flex; gap: 0.7rem; padding: 0.3rem 0; border-bottom: 1px solid var(--line); }
+.log .time { color: var(--muted); width: 4.6rem; flex: none; }
+.log .dev { color: var(--muted); width: 10rem; flex: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.log .key { flex: 1; }
+.log .bound { color: var(--ok); }
+
+.bindings { flex: 1; overflow-y: auto; }
+.bindings li {
+	display: flex;
+	align-items: center;
+	gap: 0.8rem;
+	padding: 0.6rem 0.3rem;
+	border-bottom: 1px solid var(--line);
+}
+.bindings .sig { width: 12rem; flex: none; }
+.bindings .sig small { display: block; color: var(--muted); font-size: 0.75rem; }
+.bindings .label { flex: 1; font-weight: bold; }
+.bindings li.hit { background-color: #173a28; }
+
+/* Dialog: always in the page, shown with a class */
+#modal {
+	display: none;
+	position: fixed;
+	top: 0; left: 0;
+	width: 100vw; height: 100vh;
+	z-index: 10;
+	align-items: center;
+	justify-content: center;
+	background-color: rgba(0, 0, 0, 0.75);
+}
+body.modalopen #modal { display: flex; }
+#stepwait, #stepbind { display: none; }
+body.waiting #stepwait { display: block; }
+body.binding #stepbind { display: block; }
+
+.dialog {
+	width: 78vw;
+	max-height: 88vh;
+	background-color: var(--card);
+	border-radius: 0.9rem;
+	padding: 1.7rem 2rem;
+	overflow: hidden;
+}
+#stepwait { text-align: center; }
+
+.pulse {
+	width: 5rem; height: 5rem;
+	margin: 1.2rem auto 1.6rem;
+	border-radius: 50%;
+	background-color: var(--accent);
+	will-change: transform, opacity;
+}
+body.waiting .pulse { animation: pulse 1.4s infinite; }
+@keyframes pulse {
+	0% { transform: scale(0.7); opacity: 1; }
+	100% { transform: scale(1.3); opacity: 0.1; }
+}
+
+.tabs { display: flex; gap: 0.5rem; margin: 0.4rem 0 1rem; flex-wrap: wrap; }
+.tabs button.on { background-color: var(--accent); color: #04121f; }
+.choices {
+	display: flex; flex-wrap: wrap; gap: 0.55rem;
+	max-height: 48vh; overflow-y: auto;
+	padding: 0.3rem;
+}
+.choices button { min-width: 8rem; }
+.footer { margin-top: 1.1rem; justify-content: space-between; }
+
+#toast {
+	display: none;
+	position: fixed;
+	left: 50%;
+	bottom: 6vh;
+	z-index: 20;
+	transform: translateX(-50%);
+	max-width: 70vw;
+	padding: 0.7rem 1.4rem;
+	border-radius: 0.55rem;
+	background-color: #000;
+	box-shadow: inset 0 0 0 2px var(--line);
+}
+#toast.show { display: block; }
